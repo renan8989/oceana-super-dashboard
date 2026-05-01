@@ -508,22 +508,28 @@
       top: 0; left: 0; right: 0;
       height: 3px;
     }
-    .commercial-kpi-card.cat-frio::before { background: linear-gradient(90deg, #64748b, #94a3b8); }
+    .commercial-kpi-card.cat-frio::before         { background: linear-gradient(90deg, #64748b, #94a3b8); }
+    .commercial-kpi-card.cat-morno::before        { background: linear-gradient(90deg, #f97316, #eab308); }
     .commercial-kpi-card.cat-redirecionado::before { background: linear-gradient(90deg, #eab308, #f97316); }
-    .commercial-kpi-card.cat-quente::before { background: linear-gradient(90deg, #4f6ef7, #7c3aed); }
-    .commercial-kpi-card.cat-visita::before { background: linear-gradient(90deg, #22c55e, #16a34a); }
-    .commercial-kpi-card.cat-total::before { background: linear-gradient(90deg, #7c3aed, #4f6ef7); }
+    .commercial-kpi-card.cat-quente::before       { background: linear-gradient(90deg, #4f6ef7, #7c3aed); }
+    .commercial-kpi-card.cat-visita::before       { background: linear-gradient(90deg, #22c55e, #16a34a); }
+    .commercial-kpi-card.cat-perdido::before      { background: linear-gradient(90deg, #ef4444, #dc2626); }
+    .commercial-kpi-card.cat-vendido::before      { background: linear-gradient(90deg, #a855f7, #7c3aed); }
+    .commercial-kpi-card.cat-total::before        { background: linear-gradient(90deg, #7c3aed, #4f6ef7); }
     .commercial-kpi-value {
       font-size: 2.2rem;
       font-weight: 700;
       line-height: 1;
       margin-bottom: 6px;
     }
-    .cat-frio .commercial-kpi-value { color: #94a3b8; }
+    .cat-frio .commercial-kpi-value         { color: #94a3b8; }
+    .cat-morno .commercial-kpi-value        { color: #f97316; }
     .cat-redirecionado .commercial-kpi-value { color: #eab308; }
-    .cat-quente .commercial-kpi-value { color: #4f6ef7; }
-    .cat-visita .commercial-kpi-value { color: #22c55e; }
-    .cat-total .commercial-kpi-value { color: #7c3aed; }
+    .cat-quente .commercial-kpi-value       { color: #4f6ef7; }
+    .cat-visita .commercial-kpi-value       { color: #22c55e; }
+    .cat-perdido .commercial-kpi-value      { color: #ef4444; }
+    .cat-vendido .commercial-kpi-value      { color: #a855f7; }
+    .cat-total .commercial-kpi-value        { color: #7c3aed; }
     .commercial-kpi-label {
       font-size: 0.72rem;
       font-weight: 600;
@@ -580,10 +586,111 @@
       padding: 3px 10px;
       border-radius: 20px;
     }
-    .cat-badge.Frio { background: rgba(148,163,184,0.15); color: #94a3b8; }
-    .cat-badge.Redirecionado { background: rgba(234,179,8,0.15); color: #eab308; }
-    .cat-badge.Quente { background: rgba(79,110,247,0.15); color: #4f6ef7; }
-    .cat-badge.Visita { background: rgba(34,197,94,0.15); color: #22c55e; }
+    .cat-badge.Frio          { background: rgba(148,163,184,0.15); color: #94a3b8; }
+    .cat-badge.Morno         { background: rgba(249,115,22,0.15);  color: #f97316; }
+    .cat-badge.Redirecionado { background: rgba(234,179,8,0.15);   color: #eab308; }
+    .cat-badge.Quente        { background: rgba(79,110,247,0.15);  color: #4f6ef7; }
+    .cat-badge.Visita        { background: rgba(34,197,94,0.15);   color: #22c55e; }
+    .cat-badge.Perdido       { background: rgba(239,68,68,0.15);   color: #ef4444; }
+    .cat-badge.Vendido       { background: rgba(168,85,247,0.15);  color: #a855f7; }
+
+    /* Métricas comerciais */
+    .commercial-metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+    .commercial-metric-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+    .commercial-metric-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--accent);
+    }
+    .commercial-metric-icon {
+      font-size: 1.3rem;
+      margin-bottom: 2px;
+    }
+    .commercial-metric-value {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1;
+    }
+    .commercial-metric-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--muted);
+    }
+    .commercial-metric-sub {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+    /* Funil comercial */
+    .commercial-funnel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 32px;
+    }
+    .commercial-funnel-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 20px;
+    }
+    .commercial-funnel-steps {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .commercial-funnel-step {
+      flex: 1;
+      min-width: 90px;
+      background: var(--surface2);
+      border-radius: 10px;
+      padding: 14px 12px;
+      text-align: center;
+      border: 1px solid var(--border);
+    }
+    .commercial-funnel-step-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .commercial-funnel-step-label {
+      font-size: 0.68rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-top: 4px;
+    }
+    .commercial-funnel-step-rate {
+      font-size: 0.75rem;
+      color: var(--green);
+      font-weight: 600;
+      margin-top: 4px;
+    }
+    .commercial-funnel-arrow {
+      color: var(--muted);
+      font-size: 1.4rem;
+      flex-shrink: 0;
+    }
   </style>
 </head>
 <body>
@@ -882,10 +989,25 @@
     </div>
   </div>
 
-  <!-- KPIs Comerciais -->
-  <p class="section-title">Resumo dos Leads Comerciais</p>
+  <!-- KPIs Comerciais por Categoria -->
+  <p class="section-title">Status dos Leads por Categoria</p>
   <div class="commercial-kpi-grid" id="commercial-kpi-grid">
     <!-- Preenchido via JS -->
+  </div>
+
+  <!-- Métricas Comerciais -->
+  <p class="section-title">Métricas Comerciais</p>
+  <div class="commercial-metrics-grid" id="commercial-metrics-grid">
+    <!-- Preenchido via JS -->
+  </div>
+
+  <!-- Funil Comercial -->
+  <p class="section-title">Funil Comercial</p>
+  <div class="commercial-funnel">
+    <div class="commercial-funnel-title">Do lead ao fechamento</div>
+    <div class="commercial-funnel-steps" id="commercial-funnel-steps">
+      <!-- Preenchido via JS -->
+    </div>
   </div>
 
   <!-- Gráficos Comerciais -->
@@ -893,13 +1015,13 @@
   <div class="commercial-charts-grid">
     <div class="chart-card">
       <div class="chart-title">Leads por Categoria</div>
-      <div class="chart-wrap" style="height:260px">
+      <div class="chart-wrap" style="height:280px">
         <canvas id="chartLeadsDist"></canvas>
       </div>
     </div>
     <div class="chart-card">
       <div class="chart-title">Origem dos Leads Comerciais</div>
-      <div class="chart-wrap" style="height:260px">
+      <div class="chart-wrap" style="height:280px">
         <canvas id="chartLeadsOrigin"></canvas>
       </div>
     </div>
@@ -1249,56 +1371,116 @@
   // ===== RENDER COMERCIAL =====
   function renderCommercial(leads) {
     const catMap = {
-      'Frio': { cls: 'cat-frio', label: 'Leads Frios', color: '#94a3b8' },
-      'Redirecionado': { cls: 'cat-redirecionado', label: 'Redirecionados', color: '#eab308' },
-      'Quente': { cls: 'cat-quente', label: 'Leads Quentes', color: '#4f6ef7' },
-      'Visita Marcada': { cls: 'cat-visita', label: 'Visita Marcada', color: '#22c55e' }
+      'Visita':        { cls: 'cat-visita',        label: 'Visita Marcada',  color: '#22c55e',  icon: '📅' },
+      'Quente':        { cls: 'cat-quente',        label: 'Quentes',         color: '#4f6ef7',  icon: '🔥' },
+      'Morno':         { cls: 'cat-morno',         label: 'Mornos',          color: '#f97316',  icon: '🌡️' },
+      'Redirecionado': { cls: 'cat-redirecionado', label: 'Redirecionados',  color: '#eab308',  icon: '🔀' },
+      'Frio':          { cls: 'cat-frio',          label: 'Frios',           color: '#94a3b8',  icon: '❄️' },
+      'Perdido':       { cls: 'cat-perdido',       label: 'Perdidos',        color: '#ef4444',  icon: '❌' },
+      'Vendido':       { cls: 'cat-vendido',       label: 'Vendidos',        color: '#a855f7',  icon: '🏆' }
     };
+    const catOrder = ['Visita', 'Quente', 'Morno', 'Redirecionado', 'Frio', 'Perdido', 'Vendido'];
 
-    const counts = { 'Frio': 0, 'Redirecionado': 0, 'Quente': 0, 'Visita Marcada': 0 };
+    // Contagem por categoria
+    const counts = {};
+    catOrder.forEach(c => counts[c] = 0);
     leads.forEach(l => { if (counts[l.categoria] !== undefined) counts[l.categoria]++; });
+    const total = leads.length;
 
-    // KPI Cards
+    // ---- KPI Cards por categoria ----
     const kpiGrid = document.getElementById('commercial-kpi-grid');
-    const catOrder = ['Frio', 'Redirecionado', 'Quente', 'Visita Marcada'];
     kpiGrid.innerHTML = catOrder.map(cat => `
       <div class="commercial-kpi-card ${catMap[cat].cls}">
+        <div style="font-size:1.4rem;margin-bottom:4px">${catMap[cat].icon}</div>
         <div class="commercial-kpi-value">${counts[cat]}</div>
         <div class="commercial-kpi-label">${catMap[cat].label}</div>
       </div>
     `).join('') + `
       <div class="commercial-kpi-card cat-total">
-        <div class="commercial-kpi-value">${leads.length}</div>
+        <div style="font-size:1.4rem;margin-bottom:4px">👥</div>
+        <div class="commercial-kpi-value">${total}</div>
         <div class="commercial-kpi-label">Total de Leads</div>
       </div>
     `;
 
-    // Gráfico de distribuição por categoria
+    // ---- Métricas Comerciais ----
+    const responderam = leads.filter(l => l.categoria !== 'Frio').length;
+    const taxaResposta = total > 0 ? (responderam / total * 100).toFixed(0) : 0;
+    const qualificados = leads.filter(l => ['Quente','Visita','Morno'].includes(l.categoria)).length;
+    const taxaQualif = total > 0 ? (qualificados / total * 100).toFixed(0) : 0;
+    const visitas = counts['Visita'];
+    const taxaVisita = total > 0 ? (visitas / total * 100).toFixed(0) : 0;
+    const vendidos = counts['Vendido'];
+    const taxaConversao = total > 0 ? (vendidos / total * 100).toFixed(0) : 0;
+    const redirecionados = counts['Redirecionado'];
+    const taxaRedir = total > 0 ? (redirecionados / total * 100).toFixed(0) : 0;
+    const perdidos = counts['Perdido'];
+    const taxaPerda = total > 0 ? (perdidos / total * 100).toFixed(0) : 0;
+
+    const metrics = [
+      { icon: '💬', value: responderam, label: 'Responderam', sub: taxaResposta + '% do total' },
+      { icon: '⭐', value: qualificados, label: 'Qualificados', sub: taxaQualif + '% (Morno+Quente+Visita)' },
+      { icon: '🏠', value: visitas, label: 'Visitas Marcadas', sub: taxaVisita + '% do total' },
+      { icon: '🔄', value: redirecionados, label: 'Redirecionados', sub: taxaRedir + '% do total' },
+      { icon: '❌', value: perdidos, label: 'Perdidos', sub: taxaPerda + '% do total' },
+      { icon: '🏆', value: vendidos, label: 'Vendidos', sub: taxaConversao + '% de conversão' }
+    ];
+    document.getElementById('commercial-metrics-grid').innerHTML = metrics.map(m => `
+      <div class="commercial-metric-card">
+        <div class="commercial-metric-icon">${m.icon}</div>
+        <div class="commercial-metric-value">${m.value}</div>
+        <div class="commercial-metric-label">${m.label}</div>
+        <div class="commercial-metric-sub">${m.sub}</div>
+      </div>
+    `).join('');
+
+    // ---- Funil Comercial ----
+    const funnelSteps = [
+      { label: 'Total Leads', value: total, rate: null },
+      { label: 'Responderam', value: responderam, rate: taxaResposta + '%' },
+      { label: 'Qualificados', value: qualificados, rate: taxaQualif + '%' },
+      { label: 'Visita', value: visitas, rate: taxaVisita + '%' },
+      { label: 'Vendidos', value: vendidos, rate: taxaConversao + '%' }
+    ];
+    document.getElementById('commercial-funnel-steps').innerHTML = funnelSteps.map((s, i) => {
+      const arrow = i < funnelSteps.length - 1 ? '<div class="commercial-funnel-arrow">›</div>' : '';
+      return `
+        <div class="commercial-funnel-step">
+          <div class="commercial-funnel-step-value">${s.value}</div>
+          <div class="commercial-funnel-step-label">${s.label}</div>
+          ${s.rate ? `<div class="commercial-funnel-step-rate">${s.rate}</div>` : ''}
+        </div>
+        ${arrow}
+      `;
+    }).join('');
+
+    // ---- Gráfico de distribuição por categoria ----
+    const activeCats = catOrder.filter(c => counts[c] > 0);
     new Chart(document.getElementById('chartLeadsDist'), {
       type: 'doughnut',
       data: {
-        labels: catOrder.map(c => catMap[c].label),
+        labels: activeCats.map(c => catMap[c].label),
         datasets: [{
-          data: catOrder.map(c => counts[c]),
-          backgroundColor: ['#94a3b8', '#eab308', '#4f6ef7', '#22c55e'],
-          borderColor: '#1a1d27',
-          borderWidth: 3
+          data: activeCats.map(c => counts[c]),
+          backgroundColor: activeCats.map(c => catMap[c].color + 'cc'),
+          borderColor: activeCats.map(c => catMap[c].color),
+          borderWidth: 2
         }]
       },
       options: {
         responsive: true, maintainAspectRatio: false,
         plugins: {
-          legend: { position: 'right', labels: { color: '#94a3b8', font: { size: 12 }, padding: 14 } }
+          legend: { position: 'right', labels: { color: '#94a3b8', font: { size: 12 }, padding: 14 } },
+          tooltip: { callbacks: { label: ctx => ` ${ctx.label}: ${ctx.parsed} lead${ctx.parsed !== 1 ? 's' : ''} (${(ctx.parsed/total*100).toFixed(0)}%)` } }
         }
       }
     });
 
-    // Gráfico de origem dos leads
+    // ---- Gráfico de origem dos leads ----
     const origemMap = {};
     leads.forEach(l => { origemMap[l.campanha] = (origemMap[l.campanha] || 0) + 1; });
     const origemLabels = Object.keys(origemMap);
     const origemColors = ['#4f6ef7', '#7c3aed', '#22c55e', '#eab308', '#ef4444'];
-
     new Chart(document.getElementById('chartLeadsOrigin'), {
       type: 'bar',
       data: {
@@ -1320,21 +1502,19 @@
       }
     });
 
-    // Tabela de leads
-    const sortOrder = { 'Visita Marcada': 0, 'Quente': 1, 'Redirecionado': 2, 'Frio': 3 };
+    // ---- Tabela de leads ----
+    const sortOrder = { 'Vendido': 0, 'Visita': 1, 'Quente': 2, 'Morno': 3, 'Redirecionado': 4, 'Frio': 5, 'Perdido': 6 };
     const sorted = [...leads].sort((a, b) => (sortOrder[a.categoria] ?? 9) - (sortOrder[b.categoria] ?? 9));
-
-    document.getElementById('leads-table-body').innerHTML = sorted.map(l => {
-      const catKey = l.categoria === 'Visita Marcada' ? 'Visita' : l.categoria;
-      return `<tr>
+    document.getElementById('leads-table-body').innerHTML = sorted.map(l => `
+      <tr>
         <td><strong>${l.nome}</strong></td>
-        <td><span class="cat-badge ${catKey}">${l.categoria}</span></td>
+        <td><span class="cat-badge ${l.categoria}">${catMap[l.categoria] ? catMap[l.categoria].icon + ' ' + l.categoria : l.categoria}</span></td>
         <td style="color:var(--muted)">${l.interesse}</td>
         <td style="color:var(--muted);font-size:0.8rem">${l.campanha}</td>
         <td style="color:var(--muted);font-size:0.8rem">${formatDate(l.ultima_interacao)}</td>
         <td style="color:var(--muted);font-size:0.8rem;max-width:300px">${l.resumo}</td>
-      </tr>`;
-    }).join('');
+      </tr>
+    `).join('');
   }
 
   function exportPDF() {
