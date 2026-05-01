@@ -1,0 +1,1386 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bluedoor — Oceana Golf | Super Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d27;
+      --surface2: #22263a;
+      --accent: #4f6ef7;
+      --accent2: #7c3aed;
+      --green: #22c55e;
+      --yellow: #eab308;
+      --red: #ef4444;
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --border: #2d3148;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      min-height: 100vh;
+    }
+    header {
+      background: linear-gradient(135deg, #1a1d27 0%, #22263a 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 24px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+    .logo-area img {
+      height: 48px;
+      width: auto;
+      object-fit: contain;
+      filter: drop-shadow(0 2px 6px rgba(0,0,0,0.4));
+    }
+    .logo-text h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      background: linear-gradient(90deg, #4f6ef7, #7c3aed);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .logo-text p {
+      color: var(--muted);
+      font-size: 0.85rem;
+      margin-top: 4px;
+    }
+    .header-meta {
+      text-align: right;
+    }
+    .badge-live {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(34,197,94,0.15);
+      border: 1px solid rgba(34,197,94,0.4);
+      color: var(--green);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    .badge-live::before {
+      content: '';
+      width: 7px;
+      height: 7px;
+      background: var(--green);
+      border-radius: 50%;
+      animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+    .update-info {
+      color: var(--muted);
+      font-size: 0.78rem;
+    }
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 32px 24px;
+    }
+    .section-title {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+    .campaign-header {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin-bottom: 28px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      background: var(--green);
+      border-radius: 50%;
+      flex-shrink: 0;
+      box-shadow: 0 0 8px var(--green);
+      animation: pulse 1.5s infinite;
+    }
+    .campaign-name {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text);
+      flex: 1;
+    }
+    .campaign-period {
+      font-size: 0.8rem;
+      color: var(--muted);
+      background: var(--surface2);
+      padding: 4px 12px;
+      border-radius: 8px;
+    }
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+    .kpi-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+    .kpi-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--accent);
+    }
+    .kpi-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+    }
+    .kpi-label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+    .kpi-value {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1;
+    }
+    .kpi-sub {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-top: 6px;
+    }
+    .kpi-card.highlight::before {
+      background: linear-gradient(90deg, var(--green), #16a34a);
+    }
+    .kpi-card.highlight .kpi-value {
+      color: var(--green);
+    }
+    .kpi-card.warn::before {
+      background: linear-gradient(90deg, var(--yellow), #ca8a04);
+    }
+    .charts-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 32px;
+    }
+    @media (max-width: 768px) {
+      .charts-grid { grid-template-columns: 1fr; }
+    }
+    .chart-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+    }
+    .chart-title {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 20px;
+    }
+    .chart-wrap {
+      position: relative;
+      height: 220px;
+    }
+    .gender-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+    @media (max-width: 600px) {
+      .gender-grid { grid-template-columns: 1fr; }
+      .gender-grid .chart-card { grid-column: span 1 !important; }
+    }
+    .gender-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .gender-card.male { border-top: 3px solid #4f6ef7; }
+    .gender-card.female { border-top: 3px solid #ec4899; }
+    .gender-icon { font-size: 2rem; margin-bottom: 6px; }
+    .gender-card.male .gender-icon { color: #4f6ef7; }
+    .gender-card.female .gender-icon { color: #ec4899; }
+    .gender-label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 14px; }
+    .gender-leads { font-size: 2.4rem; font-weight: 700; color: var(--text); line-height: 1; }
+    .gender-leads-label { font-size: 0.7rem; color: var(--muted); margin-bottom: 12px; }
+    .gender-cpl { font-size: 1.2rem; font-weight: 600; }
+    .gender-card.male .gender-cpl { color: #4f6ef7; }
+    .gender-card.female .gender-cpl { color: #ec4899; }
+    .gender-cpl-label { font-size: 0.7rem; color: var(--muted); margin-bottom: 16px; }
+    .gender-bar-wrap { background: var(--surface2); border-radius: 6px; height: 8px; margin: 0 auto 8px; width: 100%; }
+    .gender-bar { height: 8px; border-radius: 6px; transition: width 0.8s ease; }
+    .male-bar { background: linear-gradient(90deg, #4f6ef7, #7c3aed); }
+    .female-bar { background: linear-gradient(90deg, #ec4899, #f43f5e); }
+    .gender-pct { font-size: 0.75rem; color: var(--muted); }
+    .platform-table-wrap {
+      margin-bottom: 32px;
+      overflow-x: auto;
+    }
+    .platform-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--surface);
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    .platform-table th {
+      background: var(--surface2);
+      color: var(--muted);
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 12px 16px;
+      text-align: left;
+    }
+    .platform-table td {
+      padding: 14px 16px;
+      border-top: 1px solid var(--border);
+      font-size: 0.88rem;
+      color: var(--text);
+    }
+    .platform-table tr:hover td { background: var(--surface2); }
+    .platform-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 600;
+    }
+    .platform-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+    .creative-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+    @media (max-width: 600px) { .creative-grid { grid-template-columns: 1fr; } }
+    .funnel-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 32px;
+    }
+    .funnel-title {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 20px;
+    }
+    .funnel-steps {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      flex-wrap: wrap;
+    }
+    .funnel-step {
+      flex: 1;
+      min-width: 120px;
+      text-align: center;
+      padding: 16px 8px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      position: relative;
+    }
+    .funnel-step:first-child { border-radius: 10px 0 0 10px; }
+    .funnel-step:last-child { border-radius: 0 10px 10px 0; }
+    .funnel-step-value {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+    .funnel-step-label {
+      font-size: 0.7rem;
+      color: var(--muted);
+      margin-top: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .funnel-arrow {
+      font-size: 1.2rem;
+      color: var(--border);
+      padding: 0 4px;
+    }
+    .funnel-rate {
+      font-size: 0.65rem;
+      color: var(--green);
+      margin-top: 2px;
+    }
+    .analysis-section {
+      margin-bottom: 32px;
+    }
+    .analysis-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+    }
+    .analysis-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      transition: transform 0.15s;
+    }
+    .analysis-card:hover { transform: translateY(-2px); }
+    .analysis-card.positive { border-left: 4px solid var(--green); }
+    .analysis-card.negative { border-left: 4px solid var(--red); }
+    .analysis-card.action  { border-left: 4px solid var(--accent); }
+    .analysis-icon {
+      font-size: 1.5rem;
+      line-height: 1;
+    }
+    .analysis-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .analysis-body {
+      font-size: 0.82rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+    .analysis-badge {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 20px;
+      width: fit-content;
+    }
+    .badge-green  { background: rgba(34,197,94,0.15);  color: #22c55e; }
+    .badge-red    { background: rgba(239,68,68,0.15);   color: #ef4444; }
+    .badge-blue   { background: rgba(79,110,247,0.15);  color: #4f6ef7; }
+    .badge-yellow { background: rgba(234,179,8,0.15);   color: #eab308; }
+    .badge-orange { background: rgba(249,115,22,0.15);  color: #f97316; }
+    .badge-purple { background: rgba(124,58,237,0.15);  color: #7c3aed; }
+    .table-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 32px;
+      overflow-x: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      padding: 10px 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+    td {
+      padding: 12px 16px;
+      font-size: 0.88rem;
+      border-bottom: 1px solid rgba(45,49,72,0.5);
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: rgba(79,110,247,0.05); }
+    .metric-name { color: var(--muted); font-size: 0.78rem; }
+    .metric-val { font-weight: 600; }
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 20px 32px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.75rem;
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+    .disclaimer {
+      background: rgba(79,110,247,0.08);
+      border: 1px solid rgba(79,110,247,0.2);
+      border-radius: 8px;
+      padding: 10px 16px;
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-bottom: 28px;
+    }
+
+    /* ===== SEÇÃO COMERCIAL ===== */
+    .commercial-divider {
+      border: none;
+      border-top: 2px solid var(--border);
+      margin: 40px 0 32px 0;
+    }
+    .commercial-header {
+      background: linear-gradient(135deg, rgba(124,58,237,0.15) 0%, rgba(79,110,247,0.10) 100%);
+      border: 1px solid rgba(124,58,237,0.3);
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin-bottom: 28px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .commercial-header-icon {
+      font-size: 1.8rem;
+    }
+    .commercial-header-text h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .commercial-header-text p {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+    .commercial-kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+    .commercial-kpi-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+      text-align: center;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+    .commercial-kpi-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--accent2);
+    }
+    .commercial-kpi-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+    }
+    .commercial-kpi-card.cat-frio::before { background: linear-gradient(90deg, #64748b, #94a3b8); }
+    .commercial-kpi-card.cat-redirecionado::before { background: linear-gradient(90deg, #eab308, #f97316); }
+    .commercial-kpi-card.cat-quente::before { background: linear-gradient(90deg, #4f6ef7, #7c3aed); }
+    .commercial-kpi-card.cat-visita::before { background: linear-gradient(90deg, #22c55e, #16a34a); }
+    .commercial-kpi-card.cat-total::before { background: linear-gradient(90deg, #7c3aed, #4f6ef7); }
+    .commercial-kpi-value {
+      font-size: 2.2rem;
+      font-weight: 700;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    .cat-frio .commercial-kpi-value { color: #94a3b8; }
+    .cat-redirecionado .commercial-kpi-value { color: #eab308; }
+    .cat-quente .commercial-kpi-value { color: #4f6ef7; }
+    .cat-visita .commercial-kpi-value { color: #22c55e; }
+    .cat-total .commercial-kpi-value { color: #7c3aed; }
+    .commercial-kpi-label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+    }
+    .commercial-charts-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 32px;
+    }
+    @media (max-width: 768px) {
+      .commercial-charts-grid { grid-template-columns: 1fr; }
+    }
+    .leads-table-wrap {
+      margin-bottom: 32px;
+      overflow-x: auto;
+    }
+    .leads-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--surface);
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    .leads-table th {
+      background: var(--surface2);
+      color: var(--muted);
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: none;
+    }
+    .leads-table td {
+      padding: 14px 16px;
+      border-top: 1px solid var(--border);
+      font-size: 0.88rem;
+      color: var(--text);
+      border-bottom: none;
+    }
+    .leads-table tr:hover td { background: var(--surface2); }
+    .cat-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 20px;
+    }
+    .cat-badge.Frio { background: rgba(148,163,184,0.15); color: #94a3b8; }
+    .cat-badge.Redirecionado { background: rgba(234,179,8,0.15); color: #eab308; }
+    .cat-badge.Quente { background: rgba(79,110,247,0.15); color: #4f6ef7; }
+    .cat-badge.Visita { background: rgba(34,197,94,0.15); color: #22c55e; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo-area">
+    <img src="logo.png" alt="Blue Door" />
+    <div class="logo-text">
+      <h1>Bluedoor Meta Ads Hub</h1>
+      <p>Conta: act_1453008295739427</p>
+    </div>
+  </div>
+  <div class="header-meta">
+    <div class="badge-live">AO VIVO</div>
+    <div class="update-info" id="update-time">Última atualização: carregando...</div>
+  </div>
+</header>
+
+<div class="container">
+
+  <div class="disclaimer">
+    Os dados desta dashboard são parciais e estão sujeitos a alterações, pois o período inclui o dia de hoje. Atualização automática diária via GitHub Actions.
+  </div>
+
+  <!-- KPI Cards -->
+  <p class="section-title">Indicadores Principais</p>
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-label">Impressões</div>
+      <div class="kpi-value" id="kpi-impressions">—</div>
+      <div class="kpi-sub">Exibições do anúncio</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Alcance</div>
+      <div class="kpi-value" id="kpi-reach">—</div>
+      <div class="kpi-sub">Accounts Center accounts</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Frequência</div>
+      <div class="kpi-value" id="kpi-frequency">—</div>
+      <div class="kpi-sub">Visualizações por conta</div>
+    </div>
+    <div class="kpi-card highlight">
+      <div class="kpi-label">Leads</div>
+      <div class="kpi-value" id="kpi-leads">—</div>
+      <div class="kpi-sub">Cadastros gerados</div>
+    </div>
+    <div class="kpi-card warn">
+      <div class="kpi-label">Valor Usado</div>
+      <div class="kpi-value" id="kpi-spend">—</div>
+      <div class="kpi-sub">Investimento total (BRL)</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Custo por Lead</div>
+      <div class="kpi-value" id="kpi-cpl">—</div>
+      <div class="kpi-sub">Por cadastro (BRL)</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">CPM</div>
+      <div class="kpi-value" id="kpi-cpm">—</div>
+      <div class="kpi-sub">Custo por 1.000 impressões</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">CTR (todos)</div>
+      <div class="kpi-value" id="kpi-ctr">—</div>
+      <div class="kpi-sub">Taxa de cliques</div>
+    </div>
+  </div>
+
+  <!-- Charts -->
+  <p class="section-title">Distribuição de Métricas</p>
+  <div class="charts-grid">
+    <div class="chart-card">
+      <div class="chart-title">Cliques (todos) vs. Link clicks</div>
+      <div class="chart-wrap">
+        <canvas id="chartClicks"></canvas>
+      </div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Distribuição do Investimento</div>
+      <div class="chart-wrap">
+        <canvas id="chartSpend"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Gender Breakdown -->
+  <p class="section-title">Desempenho por Gênero</p>
+  <div class="gender-grid">
+    <div class="gender-card male">
+      <div class="gender-icon">♂</div>
+      <div class="gender-label">Masculino</div>
+      <div class="gender-leads" id="g-male-leads">—</div>
+      <div class="gender-leads-label">Leads</div>
+      <div class="gender-cpl" id="g-male-cpl">—</div>
+      <div class="gender-cpl-label">Custo por lead</div>
+      <div class="gender-bar-wrap">
+        <div class="gender-bar male-bar" id="g-male-bar"></div>
+      </div>
+      <div class="gender-pct" id="g-male-pct">—</div>
+    </div>
+    <div class="gender-card female">
+      <div class="gender-icon">♀</div>
+      <div class="gender-label">Feminino</div>
+      <div class="gender-leads" id="g-female-leads">—</div>
+      <div class="gender-leads-label">Leads</div>
+      <div class="gender-cpl" id="g-female-cpl">—</div>
+      <div class="gender-cpl-label">Custo por lead</div>
+      <div class="gender-bar-wrap">
+        <div class="gender-bar female-bar" id="g-female-bar"></div>
+      </div>
+      <div class="gender-pct" id="g-female-pct">—</div>
+    </div>
+    <div class="chart-card" style="grid-column: span 2;">
+      <div class="chart-title">Comparativo por Gênero — Leads, Custo por Lead e CTR (todos)</div>
+      <div class="chart-wrap" style="height:260px">
+        <canvas id="chartGender"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Age Breakdown -->
+  <p class="section-title">Distribuição por Faixa Etária</p>
+  <div class="chart-card" style="margin-bottom:32px">
+    <div class="chart-title">Leads e Investimento por Faixa Etária</div>
+    <div class="chart-wrap" style="height:300px">
+      <canvas id="chartAge"></canvas>
+    </div>
+  </div>
+
+  <!-- Platform Breakdown -->
+  <p class="section-title">Desempenho por Plataforma</p>
+  <div class="charts-grid">
+    <div class="chart-card">
+      <div class="chart-title">Investimento por Plataforma (R$)</div>
+      <div class="chart-wrap" style="height:240px">
+        <canvas id="chartPlatformSpend"></canvas>
+      </div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Leads por Plataforma</div>
+      <div class="chart-wrap" style="height:240px">
+        <canvas id="chartPlatformLeads"></canvas>
+      </div>
+    </div>
+  </div>
+  <div class="platform-table-wrap">
+    <table class="platform-table">
+      <thead>
+        <tr>
+          <th>Plataforma</th>
+          <th>Impressões</th>
+          <th>Alcance</th>
+          <th>CTR (todos)</th>
+          <th>Investimento</th>
+          <th>CPM</th>
+          <th>Leads</th>
+          <th>Custo/Lead</th>
+        </tr>
+      </thead>
+      <tbody id="platform-table-body"></tbody>
+    </table>
+  </div>
+
+  <!-- Creative Budget Distribution -->
+  <p class="section-title">Distribuição de Orçamento por Criativo</p>
+  <div class="creative-grid">
+    <div class="chart-card">
+      <div class="chart-title">% do Investimento por Criativo</div>
+      <div class="chart-wrap" style="height:300px">
+        <canvas id="chartCreativePie"></canvas>
+      </div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Investimento vs. Leads por Criativo</div>
+      <div class="chart-wrap" style="height:300px">
+        <canvas id="chartCreativeBar"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Evolução Semanal -->
+  <p class="section-title">Evolução Semanal</p>
+  <div class="chart-card" style="margin-bottom:16px">
+    <div class="chart-title">Leads e Custo por Lead por Semana</div>
+    <div class="chart-wrap" style="height:280px">
+      <canvas id="chartWeekly"></canvas>
+    </div>
+  </div>
+  <div class="table-card" style="margin-bottom:32px">
+    <table>
+      <thead>
+        <tr>
+          <th>Semana</th>
+          <th>Período</th>
+          <th>Leads</th>
+          <th>Investimento</th>
+          <th>CPL</th>
+          <th>Impressões</th>
+          <th>CTR</th>
+          <th>CPM</th>
+        </tr>
+      </thead>
+      <tbody id="weekly-table-body"></tbody>
+    </table>
+  </div>
+
+  <!-- O que está funcionando -->
+  <p class="section-title">O que está funcionando &#x2014; Pontos Fortes</p>
+  <div class="analysis-section">
+    <div class="analysis-grid" id="strengths-grid"></div>
+  </div>
+
+  <!-- O que precisa de melhoria -->
+  <p class="section-title">O que precisa de melhoria</p>
+  <div class="analysis-section">
+    <div class="analysis-grid" id="weaknesses-grid"></div>
+  </div>
+
+  <!-- Próximos Passos -->
+  <p class="section-title">Próximos Passos &#x2014; Ações Recomendadas</p>
+  <div class="analysis-section">
+    <div class="analysis-grid" id="actions-grid"></div>
+  </div>
+
+  <!-- Campanha Ativa -->
+  <p class="section-title">Campanha Ativa</p>
+  <div class="campaign-header">
+    <div class="status-dot"></div>
+    <div class="campaign-name" id="camp-name">Carregando...</div>
+    <div class="campaign-period" id="camp-period">—</div>
+  </div>
+
+  <!-- Funnel -->
+  <p class="section-title">Funil de Conversão</p>
+  <div class="funnel-card">
+    <div class="funnel-title">Da impressão ao lead</div>
+    <div class="funnel-steps">
+      <div class="funnel-step">
+        <div class="funnel-step-value" id="f-impressions">—</div>
+        <div class="funnel-step-label">Impressões</div>
+      </div>
+      <div class="funnel-arrow">›</div>
+      <div class="funnel-step">
+        <div class="funnel-step-value" id="f-reach">—</div>
+        <div class="funnel-step-label">Alcance</div>
+        <div class="funnel-rate" id="f-reach-rate">—</div>
+      </div>
+      <div class="funnel-arrow">›</div>
+      <div class="funnel-step">
+        <div class="funnel-step-value" id="f-clicks">—</div>
+        <div class="funnel-step-label">Cliques (todos)</div>
+        <div class="funnel-rate" id="f-clicks-rate">—</div>
+      </div>
+      <div class="funnel-arrow">›</div>
+      <div class="funnel-step">
+        <div class="funnel-step-value" id="f-link-clicks">—</div>
+        <div class="funnel-step-label">Link clicks</div>
+        <div class="funnel-rate" id="f-link-rate">—</div>
+      </div>
+      <div class="funnel-arrow">›</div>
+      <div class="funnel-step">
+        <div class="funnel-step-value" id="f-leads">—</div>
+        <div class="funnel-step-label">Leads</div>
+        <div class="funnel-rate" id="f-leads-rate">—</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Detailed Metrics Table -->
+  <p class="section-title">Métricas Detalhadas</p>
+  <div class="table-card">
+    <table>
+      <thead>
+        <tr>
+          <th>Métrica</th>
+          <th>Valor</th>
+          <th>Definição</th>
+        </tr>
+      </thead>
+      <tbody id="metrics-table">
+        <tr><td colspan="3" style="text-align:center;color:var(--muted)">Carregando dados...</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ===== DIVISOR COMERCIAL ===== -->
+  <hr class="commercial-divider" />
+
+  <!-- Cabeçalho Comercial -->
+  <div class="commercial-header">
+    <div class="commercial-header-icon">💬</div>
+    <div class="commercial-header-text">
+      <h2>Painel Comercial — WhatsApp Business</h2>
+      <p>Acompanhamento dos leads gerados pela campanha Oceana Golf e atendidos via WhatsApp</p>
+    </div>
+  </div>
+
+  <!-- KPIs Comerciais -->
+  <p class="section-title">Resumo dos Leads Comerciais</p>
+  <div class="commercial-kpi-grid" id="commercial-kpi-grid">
+    <!-- Preenchido via JS -->
+  </div>
+
+  <!-- Gráficos Comerciais -->
+  <p class="section-title">Distribuição Comercial</p>
+  <div class="commercial-charts-grid">
+    <div class="chart-card">
+      <div class="chart-title">Leads por Categoria</div>
+      <div class="chart-wrap" style="height:260px">
+        <canvas id="chartLeadsDist"></canvas>
+      </div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Origem dos Leads Comerciais</div>
+      <div class="chart-wrap" style="height:260px">
+        <canvas id="chartLeadsOrigin"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabela de Leads -->
+  <p class="section-title">Detalhamento dos Leads</p>
+  <div class="leads-table-wrap">
+    <table class="leads-table">
+      <thead>
+        <tr>
+          <th>Nome</th>
+          <th>Categoria</th>
+          <th>Interesse</th>
+          <th>Campanha</th>
+          <th>Última Interação</th>
+          <th>Resumo</th>
+        </tr>
+      </thead>
+      <tbody id="leads-table-body"></tbody>
+    </table>
+  </div>
+
+</div>
+
+<!-- Botão Exportar PDF -->
+<div style="text-align:center; padding: 24px 0 40px 0;">
+  <button onclick="exportPDF()" style="
+    background: linear-gradient(135deg, #4f6ef7, #7c3aed);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 14px 36px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 4px 20px rgba(79,110,247,0.35);
+    transition: transform 0.15s, box-shadow 0.15s;
+  "
+  onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 28px rgba(79,110,247,0.5)'"
+  onmouseout="this.style.transform='';this.style.boxShadow='0 4px 20px rgba(79,110,247,0.35)'">
+    📄 Exportar PDF
+  </button>
+  <p style="color:#64748b; font-size:0.78rem; margin-top:10px;">Gera um PDF da dashboard completa para impressão ou apresentação</p>
+</div>
+
+<footer>
+  Dashboard gerada automaticamente por <a href="https://manus.im" target="_blank">Manus</a> ·
+  Dados via Meta Ads API e WhatsApp Business ·
+  Repositório: <a href="https://github.com/renan8989/oceana-super-dashboard" target="_blank">renan8989/oceana-super-dashboard</a>
+  <br>
+  Terminologia conforme padrões oficiais Meta Ads. "Reach" refere-se a Accounts Center accounts.
+</footer>
+
+<script>
+  // ===== UTILIDADES =====
+  function fmt(n, decimals = 0) {
+    return Number(n).toLocaleString('pt-BR', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+  }
+  function fmtBRL(n) {
+    return 'R$ ' + Number(n).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+  function fmtPct(n) {
+    return Number(n).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '%';
+  }
+  function formatDate(d) {
+    const [y, m, day] = d.split('-');
+    return `${day}/${m}/${y}`;
+  }
+
+  // ===== CARREGAR DADOS =====
+  Promise.all([
+    fetch('data/campaign_data.json?v=' + Date.now()).then(r => r.json()),
+    fetch('data/leads_data.json?v=' + Date.now()).then(r => r.json())
+  ]).then(([adsData, leadsData]) => {
+    renderAds(adsData);
+    renderCommercial(leadsData);
+  }).catch(err => {
+    document.getElementById('update-time').textContent = 'Erro ao carregar dados';
+    console.error(err);
+  });
+
+  // ===== RENDER ADS (idêntico ao Fiori) =====
+  function renderAds(data) {
+    const c = data.campaigns[0];
+    const updated = new Date(data.last_updated);
+    document.getElementById('update-time').textContent =
+      'Última atualização: ' + updated.toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' });
+
+    document.getElementById('camp-name').textContent = c.name;
+    document.getElementById('camp-period').textContent =
+      formatDate(data.date_range.start) + ' — ' + formatDate(data.date_range.end);
+
+    document.getElementById('kpi-impressions').textContent = fmt(c.impressions);
+    document.getElementById('kpi-reach').textContent = fmt(c.reach);
+    document.getElementById('kpi-frequency').textContent = fmt(c.frequency, 2);
+    document.getElementById('kpi-leads').textContent = fmt(c.leads);
+    document.getElementById('kpi-spend').textContent = fmtBRL(c.spend);
+    document.getElementById('kpi-cpl').textContent = fmtBRL(c.cost_per_lead);
+    document.getElementById('kpi-cpm').textContent = fmtBRL(c.cpm);
+    document.getElementById('kpi-ctr').textContent = fmtPct(c.ctr_all);
+
+    document.getElementById('f-impressions').textContent = fmt(c.impressions);
+    document.getElementById('f-reach').textContent = fmt(c.reach);
+    document.getElementById('f-reach-rate').textContent = fmtPct(c.reach / c.impressions * 100);
+    document.getElementById('f-clicks').textContent = fmt(c.clicks_all);
+    document.getElementById('f-clicks-rate').textContent = 'CTR ' + fmtPct(c.ctr_all);
+    document.getElementById('f-link-clicks').textContent = fmt(c.link_clicks);
+    document.getElementById('f-link-rate').textContent = fmtPct(c.link_click_ctr);
+    document.getElementById('f-leads').textContent = fmt(c.leads);
+    document.getElementById('f-leads-rate').textContent = fmtPct(c.leads / c.link_clicks * 100);
+
+    const rows = [
+      ['Impressões', fmt(c.impressions), 'Número de vezes que o anúncio foi exibido na tela'],
+      ['Alcance', fmt(c.reach), 'Accounts Center accounts que viram o anúncio pelo menos uma vez'],
+      ['Frequência', fmt(c.frequency, 2), 'Média de visualizações por Accounts Center account'],
+      ['Cliques (todos)', fmt(c.clicks_all), 'Cliques, toques ou deslizamentos no anúncio'],
+      ['Link clicks', fmt(c.link_clicks), 'Cliques em links que levaram a destinos do anunciante'],
+      ['CTR (todos)', fmtPct(c.ctr_all), 'Porcentagem de impressões com clique (todos)'],
+      ['CTR Link clicks', fmtPct(c.link_click_ctr), 'Porcentagem de impressões com link click'],
+      ['Valor usado', fmtBRL(c.spend), 'Investimento total estimado no período'],
+      ['CPM', fmtBRL(c.cpm), 'Custo médio por 1.000 impressões'],
+      ['CPC (todos)', fmtBRL(c.cpc_all), 'Custo médio por clique (todos)'],
+      ['Custo por link click', fmtBRL(c.cost_per_link_click), 'Custo médio por link click'],
+      ['Leads', fmt(c.leads), 'Cadastros gerados pela campanha'],
+      ['Custo por lead', fmtBRL(c.cost_per_lead), 'Custo médio por lead gerado'],
+    ];
+    document.getElementById('metrics-table').innerHTML = rows.map(([m, v, d]) =>
+      `<tr><td class="metric-name">${m}</td><td class="metric-val">${v}</td><td style="color:var(--muted);font-size:0.78rem">${d}</td></tr>`
+    ).join('');
+
+    new Chart(document.getElementById('chartClicks'), {
+      type: 'doughnut',
+      data: {
+        labels: ['Cliques (todos)', 'Link clicks'],
+        datasets: [{ data: [c.clicks_all, c.link_clicks], backgroundColor: ['#4f6ef7', '#7c3aed'], borderColor: '#1a1d27', borderWidth: 3 }]
+      },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#94a3b8', font: { size: 12 } } } } }
+    });
+
+    new Chart(document.getElementById('chartSpend'), {
+      type: 'bar',
+      data: {
+        labels: ['CPM (R$)', 'CPC (todos) (R$)', 'Custo/Link click (R$)', 'Custo/Lead (R$)'],
+        datasets: [{ label: 'Valor (R$)', data: [c.cpm, c.cpc_all, c.cost_per_link_click, c.cost_per_lead], backgroundColor: ['#4f6ef7', '#7c3aed', '#22c55e', '#eab308'], borderRadius: 6 }]
+      },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { ticks: { color: '#94a3b8', font: { size: 10 } }, grid: { color: '#2d3148' } }, y: { ticks: { color: '#94a3b8', font: { size: 10 }, callback: v => 'R$ ' + v.toFixed(2) }, grid: { color: '#2d3148' } } } }
+    });
+
+    const gMale = c.gender_breakdown.find(g => g.gender === 'male');
+    const gFemale = c.gender_breakdown.find(g => g.gender === 'female');
+    const totalLeads = gMale.leads + gFemale.leads;
+    document.getElementById('g-male-leads').textContent = fmt(gMale.leads);
+    document.getElementById('g-male-cpl').textContent = fmtBRL(gMale.cost_per_lead);
+    document.getElementById('g-female-leads').textContent = fmt(gFemale.leads);
+    document.getElementById('g-female-cpl').textContent = fmtBRL(gFemale.cost_per_lead);
+    const malePct = (gMale.leads / totalLeads * 100).toFixed(1);
+    const femalePct = (gFemale.leads / totalLeads * 100).toFixed(1);
+    document.getElementById('g-male-bar').style.width = malePct + '%';
+    document.getElementById('g-female-bar').style.width = femalePct + '%';
+    document.getElementById('g-male-pct').textContent = malePct + '% dos leads';
+    document.getElementById('g-female-pct').textContent = femalePct + '% dos leads';
+
+    new Chart(document.getElementById('chartGender'), {
+      type: 'bar',
+      data: {
+        labels: ['Masculino', 'Feminino'],
+        datasets: [
+          { label: 'Leads', data: [gMale.leads, gFemale.leads], backgroundColor: ['#4f6ef7', '#ec4899'], borderRadius: 6, yAxisID: 'y' },
+          { label: 'Custo por Lead (R$)', data: [gMale.cost_per_lead, gFemale.cost_per_lead], backgroundColor: ['rgba(79,110,247,0.3)', 'rgba(236,72,153,0.3)'], borderColor: ['#4f6ef7', '#ec4899'], borderWidth: 2, borderRadius: 6, yAxisID: 'y2' },
+          { label: 'CTR (todos) %', data: [gMale.ctr_all, gFemale.ctr_all], type: 'line', borderColor: '#22c55e', backgroundColor: 'rgba(34,197,94,0.1)', pointBackgroundColor: '#22c55e', pointRadius: 6, tension: 0.3, yAxisID: 'y3' }
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { labels: { color: '#94a3b8', font: { size: 12 } } } },
+        scales: {
+          x: { ticks: { color: '#94a3b8' }, grid: { color: '#2d3148' } },
+          y: { type: 'linear', position: 'left', ticks: { color: '#94a3b8', stepSize: 5 }, grid: { color: '#2d3148' }, title: { display: true, text: 'Leads', color: '#94a3b8' } },
+          y2: { type: 'linear', position: 'right', ticks: { color: '#94a3b8', callback: v => 'R$ ' + v.toFixed(0) }, grid: { drawOnChartArea: false }, title: { display: true, text: 'Custo/Lead (R$)', color: '#94a3b8' } },
+          y3: { type: 'linear', position: 'right', ticks: { color: '#22c55e', callback: v => v.toFixed(1) + '%' }, grid: { drawOnChartArea: false }, title: { display: true, text: 'CTR %', color: '#22c55e' }, offset: true }
+        }
+      }
+    });
+
+    const ages = c.age_breakdown;
+    const ageBarColors = ['#4f6ef7','#7c3aed','#22c55e','#eab308','#ef4444'];
+    new Chart(document.getElementById('chartAge'), {
+      type: 'bar',
+      data: {
+        labels: ages.map(a => a.age),
+        datasets: [
+          { label: 'Leads', data: ages.map(a => a.leads), backgroundColor: ageBarColors.map(c => c + 'dd'), borderColor: ageBarColors, borderWidth: 2, borderRadius: 8, yAxisID: 'y' },
+          { label: 'Investimento (R$)', data: ages.map(a => a.spend), type: 'line', borderColor: '#f97316', backgroundColor: 'rgba(249,115,22,0.12)', pointBackgroundColor: '#f97316', pointRadius: 7, tension: 0.3, yAxisID: 'y2' }
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { labels: { color: '#94a3b8', font: { size: 12 } } }, tooltip: { callbacks: { afterBody: (ctx) => { const idx = ctx[0].dataIndex; const cpl = ages[idx].cost_per_lead; return cpl ? ['Custo/Lead: R$ ' + Number(cpl).toFixed(2)] : ['Sem leads nesta faixa']; } } } },
+        scales: {
+          x: { ticks: { color: '#94a3b8', font: { size: 13 } }, grid: { color: '#2d3148' } },
+          y: { type: 'linear', position: 'left', ticks: { color: '#94a3b8', stepSize: 2 }, grid: { color: '#2d3148' }, title: { display: true, text: 'Leads', color: '#94a3b8' } },
+          y2: { type: 'linear', position: 'right', ticks: { color: '#f97316', callback: v => 'R$ ' + v.toFixed(0) }, grid: { drawOnChartArea: false }, title: { display: true, text: 'Investimento (R$)', color: '#f97316' } }
+        }
+      }
+    });
+
+    const platforms = c.platform_breakdown;
+    const platColors = { instagram: '#e1306c', facebook: '#1877f2' };
+    const platLabels = platforms.map(p => (p.platform || '').charAt(0).toUpperCase() + (p.platform || '').slice(1));
+    const platBgColors = platforms.map(p => platColors[p.platform] || '#4f6ef7');
+
+    new Chart(document.getElementById('chartPlatformSpend'), {
+      type: 'bar',
+      data: { labels: platLabels, datasets: [{ label: 'Investimento (R$)', data: platforms.map(p => p.spend), backgroundColor: platBgColors, borderRadius: 8 }] },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { ticks: { color: '#94a3b8' }, grid: { color: '#2d3148' } }, y: { ticks: { color: '#94a3b8', callback: v => 'R$ ' + v.toFixed(0) }, grid: { color: '#2d3148' } } } }
+    });
+
+    new Chart(document.getElementById('chartPlatformLeads'), {
+      type: 'bar',
+      data: { labels: platLabels, datasets: [{ label: 'Leads', data: platforms.map(p => p.leads), backgroundColor: platBgColors, borderRadius: 8 }] },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { ticks: { color: '#94a3b8' }, grid: { color: '#2d3148' } }, y: { ticks: { color: '#94a3b8', stepSize: 5 }, grid: { color: '#2d3148' } } } }
+    });
+
+    document.getElementById('platform-table-body').innerHTML = platforms.map(p => {
+      const color = platColors[p.platform] || '#4f6ef7';
+      return `<tr>
+        <td><span class="platform-badge"><span class="platform-dot" style="background:${color}"></span>${(p.platform||'').charAt(0).toUpperCase()+(p.platform||'').slice(1)}</span></td>
+        <td>${fmt(p.impressions)}</td>
+        <td>${fmt(p.reach)}</td>
+        <td>${fmtPct(p.ctr_all)}</td>
+        <td>${fmtBRL(p.spend)}</td>
+        <td>${fmtBRL(p.cpm)}</td>
+        <td>${fmt(p.leads)}</td>
+        <td>${p.cost_per_lead ? fmtBRL(p.cost_per_lead) : '—'}</td>
+      </tr>`;
+    }).join('');
+
+    const creatives = c.creative_breakdown;
+    const totalSpend = creatives.reduce((s, cr) => s + cr.spend, 0);
+    const creativeColors = ['#4f6ef7','#7c3aed','#22c55e','#eab308','#ef4444'];
+
+    new Chart(document.getElementById('chartCreativePie'), {
+      type: 'pie',
+      data: { labels: creatives.map(cr => cr.ad_name), datasets: [{ data: creatives.map(cr => cr.spend), backgroundColor: creativeColors, borderColor: '#1a1d27', borderWidth: 3 }] },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { color: '#94a3b8', font: { size: 12 }, padding: 16 } }, tooltip: { callbacks: { label: ctx => { const val = ctx.parsed; const pct = (val / totalSpend * 100).toFixed(1); return ` ${ctx.label}: R$ ${val.toFixed(2)} (${pct}%)`; } } } } }
+    });
+
+    new Chart(document.getElementById('chartCreativeBar'), {
+      type: 'bar',
+      data: {
+        labels: creatives.map(cr => cr.ad_name),
+        datasets: [
+          { label: 'Investimento (R$)', data: creatives.map(cr => cr.spend), backgroundColor: creativeColors.map(c => c + 'cc'), borderColor: creativeColors, borderWidth: 2, borderRadius: 6, yAxisID: 'y' },
+          { label: 'Leads', data: creatives.map(cr => cr.leads), type: 'line', borderColor: '#22c55e', backgroundColor: 'rgba(34,197,94,0.15)', pointBackgroundColor: '#22c55e', pointRadius: 6, tension: 0.3, yAxisID: 'y2' }
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { labels: { color: '#94a3b8', font: { size: 11 } } } },
+        scales: {
+          x: { ticks: { color: '#94a3b8' }, grid: { color: '#2d3148' } },
+          y: { type: 'linear', position: 'left', ticks: { color: '#94a3b8', callback: v => 'R$ ' + v.toFixed(0) }, grid: { color: '#2d3148' }, title: { display: true, text: 'Investimento (R$)', color: '#94a3b8' } },
+          y2: { type: 'linear', position: 'right', ticks: { color: '#22c55e', stepSize: 5 }, grid: { drawOnChartArea: false }, title: { display: true, text: 'Leads', color: '#22c55e' } }
+        }
+      }
+    });
+
+    const weeks = c.weekly_breakdown;
+    new Chart(document.getElementById('chartWeekly'), {
+      type: 'bar',
+      data: {
+        labels: weeks.map(w => [w.week, w.period]),
+        datasets: [
+          { label: 'Leads', data: weeks.map(w => w.leads), backgroundColor: ['#4f6ef7cc','#7c3aedcc','#22c55ecc'], borderColor: ['#4f6ef7','#7c3aed','#22c55e'], borderWidth: 2, borderRadius: 8, yAxisID: 'y' },
+          { label: 'CPL (R$)', data: weeks.map(w => w.cost_per_lead), type: 'line', borderColor: '#eab308', backgroundColor: 'rgba(234,179,8,0.12)', pointBackgroundColor: '#eab308', pointRadius: 8, tension: 0.3, yAxisID: 'y2' }
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { labels: { color: '#94a3b8', font: { size: 12 } } }, tooltip: { callbacks: { afterBody: (ctx) => { const idx = ctx[0].dataIndex; return ['Investimento: R$ ' + weeks[idx].spend.toFixed(2)]; } } } },
+        scales: {
+          x: { ticks: { color: '#94a3b8', font: { size: 11 } }, grid: { color: '#2d3148' } },
+          y: { type: 'linear', position: 'left', ticks: { color: '#94a3b8', stepSize: 5 }, grid: { color: '#2d3148' }, title: { display: true, text: 'Leads', color: '#94a3b8' } },
+          y2: { type: 'linear', position: 'right', ticks: { color: '#eab308', callback: v => 'R$ ' + v.toFixed(0) }, grid: { drawOnChartArea: false }, title: { display: true, text: 'CPL (R$)', color: '#eab308' } }
+        }
+      }
+    });
+
+    document.getElementById('weekly-table-body').innerHTML = weeks.map(w => `
+      <tr>
+        <td><strong>${w.week}</strong></td>
+        <td style="color:var(--muted);font-size:0.8rem">${w.period}</td>
+        <td><strong style="color:var(--accent)">${w.leads}</strong></td>
+        <td>${fmtBRL(w.spend)}</td>
+        <td>${fmtBRL(w.cost_per_lead)}</td>
+        <td>${fmt(w.impressions)}</td>
+        <td>${fmtPct(w.ctr_all)}</td>
+        <td>${fmtBRL(w.cpm)}</td>
+      </tr>
+    `).join('');
+
+    function makeCard(type, icon, title, badge, body) {
+      return `<div class="analysis-card ${type}">
+        <div class="analysis-icon">${icon}</div>
+        <div class="analysis-title">${title}</div>
+        <span class="analysis-badge ${badge.cls}">${badge.text}</span>
+        <div class="analysis-body">${body}</div>
+      </div>`;
+    }
+
+    const strengths = [], weaknesses = [], actions = [];
+    const male = c.gender_breakdown.find(g => g.gender === 'male');
+    const female = c.gender_breakdown.find(g => g.gender === 'female');
+    const fb = c.platform_breakdown.find(p => p.platform === 'facebook');
+    const ig = c.platform_breakdown.find(p => p.platform === 'instagram');
+    const age3544 = c.age_breakdown.find(a => a.age === '35-44');
+    const age5564 = c.age_breakdown.find(a => a.age === '55-64');
+    const topCreative = creatives.find(cr => cr.leads > 0);
+    const noLeadCreatives = creatives.filter(cr => cr.leads === 0 && cr.spend > 0);
+
+    if (c.cost_per_lead <= 35) strengths.push(makeCard('positive', '✅', 'Custo por Lead competitivo', { cls: 'badge-green', text: 'R$ ' + c.cost_per_lead.toFixed(2) + ' / lead' }, 'O CPL de <strong>R$ ' + c.cost_per_lead.toFixed(2) + '</strong> está dentro de uma faixa saudável para campanhas de imóveis de alto padrão. O criativo A2 está convertendo com eficiência.'));
+    if (topCreative) { const topPct = (topCreative.spend / totalSpend * 100).toFixed(1); strengths.push(makeCard('positive', '🎯', 'Criativo A2 altamente eficiente', { cls: 'badge-green', text: '100% dos leads' }, 'O criativo <strong>A2</strong> concentrou <strong>' + topPct + '%</strong> do orçamento e gerou <strong>todos os ' + c.leads + ' leads</strong> da campanha.')); }
+    if (male && male.cost_per_lead < c.cost_per_lead) strengths.push(makeCard('positive', '👨', 'Público masculino com excelente CPL', { cls: 'badge-green', text: 'R$ ' + male.cost_per_lead.toFixed(2) + ' / lead' }, 'Homens representam <strong>' + male.leads + ' dos ' + c.leads + ' leads</strong> com custo por lead de apenas <strong>R$ ' + male.cost_per_lead.toFixed(2) + '</strong> — <strong>' + ((1 - male.cost_per_lead / c.cost_per_lead) * 100).toFixed(0) + '% abaixo</strong> da média geral.'));
+    if (age3544 && age3544.leads > 0) { const agePct = (age3544.leads / c.leads * 100).toFixed(0); strengths.push(makeCard('positive', '📊', 'Faixa etária 35–44 anos bem definida', { cls: 'badge-green', text: agePct + '% dos leads' }, 'A faixa <strong>35–44 anos</strong> responde por <strong>' + agePct + '%</strong> dos leads com CTR de <strong>' + age3544.ctr_all.toFixed(2) + '%</strong>.')); }
+    if (fb && fb.cost_per_lead < ig.cost_per_lead) strengths.push(makeCard('positive', '📘', 'Facebook com menor custo por lead', { cls: 'badge-green', text: 'R$ ' + fb.cost_per_lead.toFixed(2) + ' / lead' }, 'Apesar de receber apenas <strong>' + (fb.spend / c.spend * 100).toFixed(1) + '%</strong> do orçamento, o Facebook gerou leads a <strong>R$ ' + fb.cost_per_lead.toFixed(2) + '</strong> — mais barato que o Instagram (R$ ' + ig.cost_per_lead.toFixed(2) + ').'));
+    if (female && female.cost_per_lead > c.cost_per_lead * 1.5) weaknesses.push(makeCard('negative', '⚠️', 'Público feminino com CPL elevado', { cls: 'badge-red', text: 'R$ ' + female.cost_per_lead.toFixed(2) + ' / lead' }, 'Mulheres geraram apenas <strong>' + female.leads + ' leads</strong> a um custo de <strong>R$ ' + female.cost_per_lead.toFixed(2) + '</strong> por lead — <strong>' + ((female.cost_per_lead / c.cost_per_lead - 1) * 100).toFixed(0) + '% acima</strong> da média.'));
+    if (noLeadCreatives.length > 0) { const noLeadSpend = noLeadCreatives.reduce((s, cr) => s + cr.spend, 0); weaknesses.push(makeCard('negative', '🚫', noLeadCreatives.length + ' criativos sem nenhum lead', { cls: 'badge-red', text: 'R$ ' + noLeadSpend.toFixed(2) + ' sem retorno' }, 'Os criativos <strong>' + noLeadCreatives.map(cr => cr.ad_name).join(', ') + '</strong> consumiram <strong>R$ ' + noLeadSpend.toFixed(2) + '</strong> sem gerar um único lead.')); }
+    if (age5564 && age5564.spend > 0 && age5564.leads === 0) weaknesses.push(makeCard('negative', '👴', 'Faixa 55–64 anos sem conversão', { cls: 'badge-yellow', text: 'R$ ' + age5564.spend.toFixed(2) + ' sem leads' }, 'A faixa <strong>55–64 anos</strong> recebeu <strong>R$ ' + age5564.spend.toFixed(2) + '</strong> com CTR baixo de <strong>' + age5564.ctr_all.toFixed(2) + '%</strong> e zero leads.'));
+    if (ig && fb && ig.cost_per_lead > fb.cost_per_lead) weaknesses.push(makeCard('negative', '📸', 'Instagram com CPL mais alto que Facebook', { cls: 'badge-yellow', text: 'R$ ' + ig.cost_per_lead.toFixed(2) + ' no Instagram' }, 'O Instagram concentra <strong>' + (ig.spend / c.spend * 100).toFixed(1) + '%</strong> do orçamento mas entrega leads <strong>' + ((ig.cost_per_lead / fb.cost_per_lead - 1) * 100).toFixed(0) + '% mais caros</strong> que o Facebook.'));
+    if (c.frequency >= 2.0) weaknesses.push(makeCard('negative', '🔄', 'Frequência elevada — risco de saturação', { cls: 'badge-yellow', text: 'Frequência: ' + c.frequency.toFixed(2) }, 'A frequência média de <strong>' + c.frequency.toFixed(2) + '</strong> significa que cada Accounts Center account viu o anúncio mais de 2 vezes. Acima de 3, o público começa a ignorar.'));
+    actions.push(makeCard('action', '💰', 'Concentrar orçamento no criativo A2', { cls: 'badge-blue', text: 'Alta prioridade' }, 'O criativo A2 é o único que converte. Pausar definitivamente A1, A3, A4 e A5 e redirecionar 100% do orçamento para o A2 enquanto novos criativos não forem testados.'));
+    actions.push(makeCard('action', '📘', 'Aumentar verba no Facebook', { cls: 'badge-blue', text: 'Oportunidade de escala' }, 'O Facebook entrega leads a <strong>R$ ' + (fb ? fb.cost_per_lead.toFixed(2) : '—') + '</strong> — mais barato que o Instagram. Testar aumentar a proporção de orçamento no Facebook de ' + (fb ? (fb.spend / c.spend * 100).toFixed(0) : '—') + '% para 25–30% pode reduzir o CPL geral.'));
+    actions.push(makeCard('action', '👨', 'Criar variação de criativo focada no público feminino', { cls: 'badge-orange', text: 'Teste A/B' }, 'Com CPL de R$ ' + (female ? female.cost_per_lead.toFixed(2) : '—') + ' para mulheres, vale criar um criativo com linguagem e imagens direcionadas ao público feminino e testar separadamente.'));
+    actions.push(makeCard('action', '🎯', 'Focar segmentação em 35–54 anos', { cls: 'badge-blue', text: 'Otimização de público' }, 'As faixas <strong>35–44</strong> e <strong>45–54</strong> concentram a maioria dos leads. Considerar restringir a segmentação de idade para 35–54 anos e reduzir desperdício nas faixas sem conversão.'));
+    actions.push(makeCard('action', '🖼️', 'Criar novos criativos antes da frequência atingir 3', { cls: 'badge-yellow', text: 'Urgência média' }, 'A frequência atual de <strong>' + c.frequency.toFixed(2) + '</strong> está se aproximando do limite de saturação. Preparar 2–3 novos criativos para substituição gradual.'));
+    actions.push(makeCard('action', '📊', 'Monitorar CPL semanalmente', { cls: 'badge-blue', text: 'Acompanhamento' }, 'Acompanhe a evolução do CPL semana a semana. Se ultrapassar R$ 40, revisar criativos e segmentação imediatamente.'));
+
+    document.getElementById('strengths-grid').innerHTML = strengths.join('');
+    document.getElementById('weaknesses-grid').innerHTML = weaknesses.join('');
+    document.getElementById('actions-grid').innerHTML = actions.join('');
+  }
+
+  // ===== RENDER COMERCIAL =====
+  function renderCommercial(leads) {
+    const catMap = {
+      'Frio': { cls: 'cat-frio', label: 'Leads Frios', color: '#94a3b8' },
+      'Redirecionado': { cls: 'cat-redirecionado', label: 'Redirecionados', color: '#eab308' },
+      'Quente': { cls: 'cat-quente', label: 'Leads Quentes', color: '#4f6ef7' },
+      'Visita Marcada': { cls: 'cat-visita', label: 'Visita Marcada', color: '#22c55e' }
+    };
+
+    const counts = { 'Frio': 0, 'Redirecionado': 0, 'Quente': 0, 'Visita Marcada': 0 };
+    leads.forEach(l => { if (counts[l.categoria] !== undefined) counts[l.categoria]++; });
+
+    // KPI Cards
+    const kpiGrid = document.getElementById('commercial-kpi-grid');
+    const catOrder = ['Frio', 'Redirecionado', 'Quente', 'Visita Marcada'];
+    kpiGrid.innerHTML = catOrder.map(cat => `
+      <div class="commercial-kpi-card ${catMap[cat].cls}">
+        <div class="commercial-kpi-value">${counts[cat]}</div>
+        <div class="commercial-kpi-label">${catMap[cat].label}</div>
+      </div>
+    `).join('') + `
+      <div class="commercial-kpi-card cat-total">
+        <div class="commercial-kpi-value">${leads.length}</div>
+        <div class="commercial-kpi-label">Total de Leads</div>
+      </div>
+    `;
+
+    // Gráfico de distribuição por categoria
+    new Chart(document.getElementById('chartLeadsDist'), {
+      type: 'doughnut',
+      data: {
+        labels: catOrder.map(c => catMap[c].label),
+        datasets: [{
+          data: catOrder.map(c => counts[c]),
+          backgroundColor: ['#94a3b8', '#eab308', '#4f6ef7', '#22c55e'],
+          borderColor: '#1a1d27',
+          borderWidth: 3
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'right', labels: { color: '#94a3b8', font: { size: 12 }, padding: 14 } }
+        }
+      }
+    });
+
+    // Gráfico de origem dos leads
+    const origemMap = {};
+    leads.forEach(l => { origemMap[l.campanha] = (origemMap[l.campanha] || 0) + 1; });
+    const origemLabels = Object.keys(origemMap);
+    const origemColors = ['#4f6ef7', '#7c3aed', '#22c55e', '#eab308', '#ef4444'];
+
+    new Chart(document.getElementById('chartLeadsOrigin'), {
+      type: 'bar',
+      data: {
+        labels: origemLabels,
+        datasets: [{
+          label: 'Leads',
+          data: origemLabels.map(k => origemMap[k]),
+          backgroundColor: origemColors.slice(0, origemLabels.length),
+          borderRadius: 8
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { ticks: { color: '#94a3b8' }, grid: { color: '#2d3148' } },
+          y: { ticks: { color: '#94a3b8', stepSize: 1 }, grid: { color: '#2d3148' } }
+        }
+      }
+    });
+
+    // Tabela de leads
+    const sortOrder = { 'Visita Marcada': 0, 'Quente': 1, 'Redirecionado': 2, 'Frio': 3 };
+    const sorted = [...leads].sort((a, b) => (sortOrder[a.categoria] ?? 9) - (sortOrder[b.categoria] ?? 9));
+
+    document.getElementById('leads-table-body').innerHTML = sorted.map(l => {
+      const catKey = l.categoria === 'Visita Marcada' ? 'Visita' : l.categoria;
+      return `<tr>
+        <td><strong>${l.nome}</strong></td>
+        <td><span class="cat-badge ${catKey}">${l.categoria}</span></td>
+        <td style="color:var(--muted)">${l.interesse}</td>
+        <td style="color:var(--muted);font-size:0.8rem">${l.campanha}</td>
+        <td style="color:var(--muted);font-size:0.8rem">${formatDate(l.ultima_interacao)}</td>
+        <td style="color:var(--muted);font-size:0.8rem;max-width:300px">${l.resumo}</td>
+      </tr>`;
+    }).join('');
+  }
+
+  function exportPDF() {
+    const btn = document.querySelector('button[onclick="exportPDF()"]');
+    btn.textContent = '⏳ Gerando PDF...';
+    btn.disabled = true;
+    window.print();
+    setTimeout(() => { btn.innerHTML = '📄 Exportar PDF'; btn.disabled = false; }, 2000);
+  }
+</script>
+
+<style>
+  @media print {
+    @page { size: A4; margin: 12mm; }
+    body { background: #fff !important; color: #111 !important; font-size: 11px; }
+    header { background: #f8fafc !important; border-bottom: 2px solid #e2e8f0 !important; padding: 12px 20px !important; }
+    .logo-text h1 { color: #1e293b !important; font-size: 1.1rem !important; }
+    .logo-text p  { color: #475569 !important; }
+    .kpi-grid, .charts-grid, .commercial-charts-grid { grid-template-columns: repeat(3, 1fr) !important; }
+    .chart-card, .kpi-card, .funnel-card, .table-card, .analysis-card, .commercial-kpi-card {
+      background: #f8fafc !important;
+      border: 1px solid #e2e8f0 !important;
+      box-shadow: none !important;
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+    .analysis-card.positive { border-left: 4px solid #16a34a !important; }
+    .analysis-card.negative { border-left: 4px solid #dc2626 !important; }
+    .analysis-card.action   { border-left: 4px solid #2563eb !important; }
+    .analysis-title, .kpi-value, .funnel-step-value, .commercial-kpi-value { color: #1e293b !important; }
+    .analysis-body, .kpi-label, .section-title, .commercial-kpi-label { color: #475569 !important; }
+    canvas { max-height: 200px !important; }
+    .chart-wrap { height: 180px !important; }
+    th { color: #475569 !important; }
+    td { color: #1e293b !important; }
+    tr:nth-child(even) td { background: #f1f5f9 !important; }
+    .badge-green  { background: #dcfce7 !important; color: #16a34a !important; }
+    .badge-red    { background: #fee2e2 !important; color: #dc2626 !important; }
+    .badge-blue   { background: #dbeafe !important; color: #2563eb !important; }
+    .badge-yellow { background: #fef9c3 !important; color: #ca8a04 !important; }
+    .badge-orange { background: #ffedd5 !important; color: #ea580c !important; }
+    .funnel-step  { background: #f1f5f9 !important; border-color: #e2e8f0 !important; }
+    .funnel-rate  { color: #16a34a !important; }
+    .commercial-divider { border-top: 2px solid #e2e8f0 !important; }
+    .commercial-header { background: #f1f5f9 !important; border: 1px solid #e2e8f0 !important; }
+  }
+</style>
+</body>
+</html>

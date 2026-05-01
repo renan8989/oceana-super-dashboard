@@ -1,0 +1,66 @@
+[
+  {
+    "nome": "Cícera Maria",
+    "categoria": "Visita Marcada",
+    "interesse": "Rio Mar",
+    "resumo": "Lead muito quente. Solicitou visita para casa no Rio Mar amanhã às 8h. Visita confirmada e marcada.",
+    "campanha": "Orgânico / Direto",
+    "ultima_interacao": "2026-05-01"
+  },
+  {
+    "nome": "Ricardo",
+    "categoria": "Quente",
+    "interesse": "Barra (4 suítes)",
+    "resumo": "Engajou bem, está analisando o book do Concept (2.6M - 2.8M).",
+    "campanha": "Oceana Golf",
+    "ultima_interacao": "2026-04-29"
+  },
+  {
+    "nome": "Renan Lemos",
+    "categoria": "Quente",
+    "interesse": "Barra (Epic/Golf)",
+    "resumo": "Engajou bem, respondeu bem. Está analisando Epic (2.3M) e Greenpark (2.2M).",
+    "campanha": "Oceana Golf",
+    "ultima_interacao": "2026-04-30"
+  },
+  {
+    "nome": "Abraao",
+    "categoria": "Redirecionado",
+    "interesse": "Recreio / Tijuca",
+    "resumo": "Entrou pela Oceana, mas mudou para Recreio (até 700k) e perguntou de Tijuca.",
+    "campanha": "Oceana Golf",
+    "ultima_interacao": "2026-04-30"
+  },
+  {
+    "nome": "Andre Felipe",
+    "categoria": "Redirecionado",
+    "interesse": "Recreio (3Q)",
+    "resumo": "Entrou pela Oceana, recebeu indicação de 3 quartos no Recreio Posto 11 por 795k.",
+    "campanha": "Oceana Golf",
+    "ultima_interacao": "2026-04-29"
+  },
+  {
+    "nome": "Simone",
+    "categoria": "Redirecionado",
+    "interesse": "Recreio",
+    "resumo": "Entrou pela Oceana, teto de 800k. Agora avaliando o Edifício Fiori (560k) no Recreio.",
+    "campanha": "Oceana Golf",
+    "ultima_interacao": "2026-04-30"
+  },
+  {
+    "nome": "Lilia",
+    "categoria": "Frio",
+    "interesse": "Barra / Golf",
+    "resumo": "Recebeu a primeira abordagem, mas ainda não respondeu.",
+    "campanha": "Oceana Golf",
+    "ultima_interacao": "2026-04-29"
+  },
+  {
+    "nome": "Rian Mesquita",
+    "categoria": "Frio",
+    "interesse": "Oceana Golf",
+    "resumo": "Respondeu apenas 'Funciona' e 'Perfeito'. Não confirmou explicitamente a visita.",
+    "campanha": "Oceana Golf",
+    "ultima_interacao": "2026-04-30"
+  }
+]
