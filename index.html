@@ -508,13 +508,13 @@
       top: 0; left: 0; right: 0;
       height: 3px;
     }
-    .commercial-kpi-card.cat-frio::before         { background: linear-gradient(90deg, #64748b, #94a3b8); }
-    .commercial-kpi-card.cat-morno::before        { background: linear-gradient(90deg, #f97316, #eab308); }
-    .commercial-kpi-card.cat-redirecionado::before { background: linear-gradient(90deg, #eab308, #f97316); }
-    .commercial-kpi-card.cat-quente::before       { background: linear-gradient(90deg, #4f6ef7, #7c3aed); }
-    .commercial-kpi-card.cat-visita::before       { background: linear-gradient(90deg, #22c55e, #16a34a); }
-    .commercial-kpi-card.cat-perdido::before      { background: linear-gradient(90deg, #ef4444, #dc2626); }
-    .commercial-kpi-card.cat-vendido::before      { background: linear-gradient(90deg, #a855f7, #7c3aed); }
+    .commercial-kpi-card.cat-frio::before         { background: linear-gradient(90deg, #3b82f6, #60a5fa); }
+    .commercial-kpi-card.cat-morno::before        { background: linear-gradient(90deg, #f97316, #fb923c); }
+    .commercial-kpi-card.cat-redirecionado::before { background: linear-gradient(90deg, #eab308, #facc15); }
+    .commercial-kpi-card.cat-quente::before       { background: linear-gradient(90deg, #ef4444, #f87171); }
+    .commercial-kpi-card.cat-visita::before       { background: linear-gradient(90deg, #a855f7, #c084fc); }
+    .commercial-kpi-card.cat-perdido::before      { background: linear-gradient(90deg, #64748b, #94a3b8); }
+    .commercial-kpi-card.cat-vendido::before      { background: linear-gradient(90deg, #22c55e, #4ade80); }
     .commercial-kpi-card.cat-total::before        { background: linear-gradient(90deg, #7c3aed, #4f6ef7); }
     .commercial-kpi-value {
       font-size: 2.2rem;
@@ -522,13 +522,13 @@
       line-height: 1;
       margin-bottom: 6px;
     }
-    .cat-frio .commercial-kpi-value         { color: #94a3b8; }
+    .cat-frio .commercial-kpi-value         { color: #3b82f6; }
     .cat-morno .commercial-kpi-value        { color: #f97316; }
     .cat-redirecionado .commercial-kpi-value { color: #eab308; }
-    .cat-quente .commercial-kpi-value       { color: #4f6ef7; }
-    .cat-visita .commercial-kpi-value       { color: #22c55e; }
-    .cat-perdido .commercial-kpi-value      { color: #ef4444; }
-    .cat-vendido .commercial-kpi-value      { color: #a855f7; }
+    .cat-quente .commercial-kpi-value       { color: #ef4444; }
+    .cat-visita .commercial-kpi-value       { color: #a855f7; }
+    .cat-perdido .commercial-kpi-value      { color: #64748b; }
+    .cat-vendido .commercial-kpi-value      { color: #22c55e; }
     .cat-total .commercial-kpi-value        { color: #7c3aed; }
     .commercial-kpi-label {
       font-size: 0.72rem;
@@ -586,13 +586,13 @@
       padding: 3px 10px;
       border-radius: 20px;
     }
-    .cat-badge.Frio          { background: rgba(148,163,184,0.15); color: #94a3b8; }
-    .cat-badge.Morno         { background: rgba(249,115,22,0.15);  color: #f97316; }
-    .cat-badge.Redirecionado { background: rgba(234,179,8,0.15);   color: #eab308; }
-    .cat-badge.Quente        { background: rgba(79,110,247,0.15);  color: #4f6ef7; }
-    .cat-badge.Visita        { background: rgba(34,197,94,0.15);   color: #22c55e; }
-    .cat-badge.Perdido       { background: rgba(239,68,68,0.15);   color: #ef4444; }
-    .cat-badge.Vendido       { background: rgba(168,85,247,0.15);  color: #a855f7; }
+    .cat-badge.Frio          { background: rgba(59,130,246,0.15);  color: #3b82f6; }
+    .cat-badge.Morno         { background: rgba(249,115,22,0.15);   color: #f97316; }
+    .cat-badge.Redirecionado { background: rgba(234,179,8,0.15);    color: #eab308; }
+    .cat-badge.Quente        { background: rgba(239,68,68,0.15);    color: #ef4444; }
+    .cat-badge.Visita        { background: rgba(168,85,247,0.15);   color: #a855f7; }
+    .cat-badge.Perdido       { background: rgba(100,116,139,0.15);  color: #64748b; }
+    .cat-badge.Vendido       { background: rgba(34,197,94,0.15);    color: #22c55e; }
 
     /* Métricas comerciais */
     .commercial-metrics-grid {
@@ -1371,13 +1371,13 @@
   // ===== RENDER COMERCIAL =====
   function renderCommercial(leads) {
     const catMap = {
-      'Visita':        { cls: 'cat-visita',        label: 'Visita Marcada',  color: '#22c55e',  icon: '📅' },
-      'Quente':        { cls: 'cat-quente',        label: 'Quentes',         color: '#4f6ef7',  icon: '🔥' },
+      'Visita':        { cls: 'cat-visita',        label: 'Visita Marcada',  color: '#a855f7',  icon: '📅' },
+      'Quente':        { cls: 'cat-quente',        label: 'Quentes',         color: '#ef4444',  icon: '🔥' },
       'Morno':         { cls: 'cat-morno',         label: 'Mornos',          color: '#f97316',  icon: '🌡️' },
       'Redirecionado': { cls: 'cat-redirecionado', label: 'Redirecionados',  color: '#eab308',  icon: '🔀' },
-      'Frio':          { cls: 'cat-frio',          label: 'Frios',           color: '#94a3b8',  icon: '❄️' },
-      'Perdido':       { cls: 'cat-perdido',       label: 'Perdidos',        color: '#ef4444',  icon: '❌' },
-      'Vendido':       { cls: 'cat-vendido',       label: 'Vendidos',        color: '#a855f7',  icon: '🏆' }
+      'Frio':          { cls: 'cat-frio',          label: 'Frios',           color: '#3b82f6',  icon: '❄️' },
+      'Perdido':       { cls: 'cat-perdido',       label: 'Perdidos',        color: '#64748b',  icon: '❌' },
+      'Vendido':       { cls: 'cat-vendido',       label: 'Vendidos',        color: '#22c55e',  icon: '🏆' }
     };
     const catOrder = ['Visita', 'Quente', 'Morno', 'Redirecionado', 'Frio', 'Perdido', 'Vendido'];
 
